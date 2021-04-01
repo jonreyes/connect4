@@ -1,0 +1,178 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Connect4ComputerPlayer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">core</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Connect4ComputerPlayer (core)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Connect4ComputerPlayer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.7%
+  </span>
+  <span class="absValue">
+    (39/ 43)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package core;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.util.ArrayList;
+<i>4</i>&nbsp;import java.util.Random;
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;/**
+<i>7</i>&nbsp; * Class
+<i>8</i>&nbsp; * Defines the template for the Connect4 CPU/AI Object.
+<i>9</i>&nbsp; * Extension that inherits from the Player class.
+<i>10</i>&nbsp; * */
+<i>11</i>&nbsp;public class Connect4ComputerPlayer extends Player {
+<i>12</i>&nbsp;    /** The number of moves the CPU has made*/
+<b class="fc"><i>13</i>&nbsp;    private int moves = 0;</b>
+<i>14</i>&nbsp;    /** The window position of the last key move the CPU has made.*/
+<i>15</i>&nbsp;    private int[] last;
+<i>16</i>&nbsp;    /** Creates the Connect 4 Computer Player object.
+<i>17</i>&nbsp;     * @param s A Symbol X or O is a relevant signature to identify Player or game piece.*/
+<i>18</i>&nbsp;    public Connect4ComputerPlayer(Symbol s){
+<b class="fc"><i>19</i>&nbsp;        super(s);</b>
+<b class="fc"><i>20</i>&nbsp;    }</b>
+<i>21</i>&nbsp;    /** The function that handles AI move generation logic.
+<i>22</i>&nbsp;     *  @param b Accepts a Board to evaluate and decide next move.
+<i>23</i>&nbsp;     *  @return The column of the determined move.*/
+<i>24</i>&nbsp;    public int move(Board b){
+<b class="fc"><i>25</i>&nbsp;        System.out.println(&quot;Random Column Selected.&quot;);</b>
+<b class="fc"><i>26</i>&nbsp;        Random r = new Random();</b>
+<b class="fc"><i>27</i>&nbsp;        int col = r.nextInt(b.getCols());</b>
+<b class="fc"><i>28</i>&nbsp;        last = b.drop(this, col);</b>
+<b class="fc"><i>29</i>&nbsp;        if(last[0]==-1) last = new int[]{0,col};</b>
+<b class="fc"><i>30</i>&nbsp;        if(predictWin(b)&gt;=0) {</b>
+<b class="nc"><i>31</i>&nbsp;            col = predictWin(b);</b>
+<b class="nc"><i>32</i>&nbsp;            System.out.printf(&quot;Predicted a Win at Col %d.\n&quot;,col+1);</b>
+<b class="fc"><i>33</i>&nbsp;        } else if(last!=null) {</b>
+<b class="fc"><i>34</i>&nbsp;            int[][][] neighbors = new int[][][]{</b>
+<i>35</i>&nbsp;                    {
+<i>36</i>&nbsp;                            {last[0] - 1, last[1] - 1}, {last[0] - 1, last[1]}, {last[0] - 1, last[1] + 1}
+<i>37</i>&nbsp;                    },
+<i>38</i>&nbsp;                    {
+<i>39</i>&nbsp;                            {last[0], last[1] - 1}, {last[0], last[1] + 1}
+<i>40</i>&nbsp;                    },
+<i>41</i>&nbsp;                    {
+<i>42</i>&nbsp;                            {last[0] + 1, last[1] - 1}, {last[0] + 1, last[1]}, {last[0] + 1, last[1] + 1}
+<i>43</i>&nbsp;                    }
+<i>44</i>&nbsp;            };
+<b class="fc"><i>45</i>&nbsp;            col = last[1];</b>
+<b class="fc"><i>46</i>&nbsp;            ArrayList&lt;Integer&gt; validNeighbors = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>47</i>&nbsp;            for (int[][] n : neighbors) {</b>
+<b class="fc"><i>48</i>&nbsp;                for (int[] e : n) {</b>
+<i>49</i>&nbsp;                    // if x is valid Column
+<b class="fc"><i>50</i>&nbsp;                    if (e[1] &gt;= 0 &amp;&amp; e[1] &lt; b.getCols()) {</b>
+<i>51</i>&nbsp;                        // get drop window
+<b class="fc"><i>52</i>&nbsp;                        int[] drop = b.drop(this, e[1]);</b>
+<b class="fc"><i>53</i>&nbsp;                        if (drop[0] == e[0] &amp;&amp; drop[1] == e[1]) {</b>
+<b class="fc"><i>54</i>&nbsp;                            validNeighbors.add(e[1]);</b>
+<i>55</i>&nbsp;                        }
+<i>56</i>&nbsp;                    }
+<i>57</i>&nbsp;                }
+<i>58</i>&nbsp;            }
+<b class="fc"><i>59</i>&nbsp;            if(validNeighbors.size()&gt;0) {</b>
+<b class="fc"><i>60</i>&nbsp;                System.out.println(&quot;Neighbor Selected.&quot;);</b>
+<b class="fc"><i>61</i>&nbsp;                col = validNeighbors.get(r.nextInt(validNeighbors.size()));</b>
+<i>62</i>&nbsp;            }
+<b class="fc"><i>63</i>&nbsp;            last = b.drop(this, col);</b>
+<i>64</i>&nbsp;            //System.out.printf(&quot;%d %d %d\n&quot;,last[0],last[1],col);
+<b class="fc"><i>65</i>&nbsp;            if(last[0]==-1) last = new int[]{0,col};</b>
+<i>66</i>&nbsp;        }
+<b class="fc"><i>67</i>&nbsp;        b.update(this,col);</b>
+<b class="fc"><i>68</i>&nbsp;        moves++;</b>
+<b class="fc"><i>69</i>&nbsp;        return col;</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    /** Helper function to determine if the Player or Opponent can make a potential winning move.
+<i>73</i>&nbsp;     * @param b Accepts a Board to evaluate possible wins.
+<i>74</i>&nbsp;     * @return The column of a potential win.*/
+<i>75</i>&nbsp;    public int predictWin(Board b){
+<b class="fc"><i>76</i>&nbsp;        Connect4 c = new Connect4(false);</b>
+<b class="fc"><i>77</i>&nbsp;        Player opponent = new Player((this.getSymbol()==Symbol.X)?Symbol.O:Symbol.X);</b>
+<b class="fc"><i>78</i>&nbsp;        for(int i = 0; i &lt; b.getCols(); i++) {</b>
+<b class="fc"><i>79</i>&nbsp;            Board t = b.clone();</b>
+<b class="fc"><i>80</i>&nbsp;            t.update(this,i);</b>
+<b class="fc"><i>81</i>&nbsp;            c.setBoard(t);</b>
+<b class="fc"><i>82</i>&nbsp;            if(c.checkWin()!=-1) {</b>
+<b class="nc"><i>83</i>&nbsp;                return i;</b>
+<i>84</i>&nbsp;            }
+<b class="fc"><i>85</i>&nbsp;            t = b.clone();</b>
+<b class="fc"><i>86</i>&nbsp;            t.update(opponent,i);</b>
+<b class="fc"><i>87</i>&nbsp;            c.setBoard(t);</b>
+<b class="fc"><i>88</i>&nbsp;            if(c.checkWin()!=-1){</b>
+<b class="nc"><i>89</i>&nbsp;                return i;</b>
+<i>90</i>&nbsp;            }
+<i>91</i>&nbsp;            //System.out.println(t);
+<i>92</i>&nbsp;        }
+<b class="fc"><i>93</i>&nbsp;        return -1;</b>
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-11-21 17:55</div>
+</div>
+</body>
+</html>
